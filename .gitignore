@@ -35,3 +35,4 @@
 ${workspaceFolder}/
 JMConnection.h
 JMConnection.cpp
+JMDebug/
