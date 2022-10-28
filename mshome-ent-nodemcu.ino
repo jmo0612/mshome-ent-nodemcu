@@ -3,11 +3,15 @@
 #include "JMWifi.h"
 #include "JMWifiWire.h"
 #include "JMTask.h"
+#include "JMData.h"
+#include "JMMsgs.h"
 
 
 JMWifi *wifi=new JMWifi();
 JMWifiWire *wifiWire=new JMWifiWire();
-JMTask *tasks=new JMTask(wifi,wifiWire);
+JMData *devData = new JMData();
+JMMsgs *msgs = new JMMsgs();
+//JMTask *tasks=new JMTask(wifi,wifiWire);
 void setup()
 {
     wifiWire->setAsMaster(D1,D2,receiveEvent);
@@ -16,10 +20,10 @@ void setup()
     
     Serial.println(F("RESET"));
     wifi->setup();
-    //receiveEvent(wifiWire->getWire()->requestFrom(8,32));
+    receiveEvent(wifiWire->getWire()->requestFrom(8,8));
     //wifiWire->sendMessage("D100000000000000000000000000001D",8);
     //Serial.println(wifi->httpGet2("/mshome-ent/g_dev.php"));
-    tasks->setup();
+    //tasks->setup();
 }
 
 void loop()
@@ -37,23 +41,87 @@ void loop()
 */
     //receiveEvent(Wire.requestFrom(8,58));
     //tes();
-    tasks->checkCommands();
-    receiveEvent(wifiWire->getWire()->requestFrom(8,32));
+    //tasks->checkCommands();
+    //receiveEvent(wifiWire->getWire()->requestFrom(8,8));
+    //processMsg();
     delay(5000);
 }
 
 void receiveEvent(size_t howMany)
 {
-  // Serial.println(F("received"));
-  char data[32] = {};
+  byte data[howMany];
   int i = 0;
   while (wifiWire->getWire()->available())
   {
-    char c = wifiWire->getWire()->read();
-    // Serial.println(int(c));
+    byte c = wifiWire->getWire()->read();
+    Serial.println(c);
     data[i++] = c;
   }
-  //Serial.println(data);
-  tasks->processTask(data);
-  //wifiWire->sendMessage("D100000000000000000000000000001D",8);
+
+  /*if (wifiWire->getWire()->available()){
+    wifiWire->getWire()->readBytes(data,8);
+  }*/
+
+  //uint64_t data=0;
+  //wifiWire->getWire()->readBytes(data,8);
+  /*for(int i=0;i<8;i++){
+    int x=data[i];
+    Serial.println("puks");
+  }*/
+
+
+
+
+
+  //uint64_t tmp=msgInt64(data);
+  //Serial.println(ToString(tmp));
+
+  //uint64_t data2 = devData->devDataToInt64(JMGlobal::PACKET_MSG_UPDATE_DEVICES_DATA);
+  //msgStr(tmp);
+  //Serial.println(ToString(data2));
+  //uint64_t tmp=1000;
+  //msgs->queueMsg(tmp);
+}
+
+uint64_t msgInt64(char *msg)
+{
+  uint64_t d0 = msg[0];
+  d0 = d0 << 56;
+  uint64_t d1 = msg[1];
+  d1 = d1 << 48;
+  uint64_t d2 = msg[2];
+  d2 = d2 << 40;
+  uint64_t d3 = msg[3];
+  d3 = d3 << 32;
+  uint64_t d4 = msg[4];
+  d4 = d4 << 24;
+  uint64_t d5 = msg[5];
+  d5 = d5 << 16;
+  uint64_t d6 = msg[6];
+  d6 = d6 << 8;
+  uint64_t d7 = msg[7];
+  return d0 + d1 + d2 + d3 + d4 + d5 + d6 + d7;
+}
+
+void processMsg()
+{
+  uint64_t msg = msgs->dequeueMsg();
+  if (msg == 0)
+    return;
+  uint64_t msgType = msg >> 56;
+  uint64_t tmp = msg << 8;
+  uint64_t data = tmp >> 8;
+  if (msgType == JMGlobal::PACKET_MSG_UPDATE_DEVICES_DATA)
+  {
+    //devData->updateDevData(data);
+  }
+  else if (msgType == JMGlobal::PACKET_MSG_REQUEST_DEVICES_DATA)
+  {
+    //uint64_t data = devData->devDataToInt64(JMGlobal::PACKET_MSG_UPDATE_DEVICES_DATA);
+    // wifiWire->sendMessage(msgStr(data));
+  }
+  else
+  {
+    //cmd->doCommand(data);
+  }
 }
