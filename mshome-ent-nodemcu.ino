@@ -2,15 +2,17 @@
 #include "JMGlobal.h"
 #include "JMWifi.h"
 #include "JMWifiWire.h"
-#include "JMTask.h"
+//#include "JMTask.h"
 #include "JMData.h"
-#include "JMMsgs.h"
+//#include "JMMsgs.h"
 
 
 JMWifi *wifi=new JMWifi();
 JMWifiWire *wifiWire=new JMWifiWire();
 JMData *devData = new JMData();
-JMMsgs *msgs = new JMMsgs();
+unsigned long checkServerTime=0;
+unsigned long requestUpdateTime=0;
+//JMMsgs *msgs = new JMMsgs();
 //JMTask *tasks=new JMTask(wifi,wifiWire);
 void setup()
 {
@@ -19,8 +21,8 @@ void setup()
     delay(1000);
     
     Serial.println(F("RESET"));
-    wifi->setup();
-    receiveEvent(wifiWire->getWire()->requestFrom(8,8));
+    wifi->setup(wifiWire);
+    
     //wifiWire->sendMessage("D100000000000000000000000000001D",8);
     //Serial.println(wifi->httpGet2("/mshome-ent/g_dev.php"));
     //tasks->setup();
@@ -28,7 +30,19 @@ void setup()
 
 void loop()
 {
-
+    unsigned long mil=millis();
+    if(mil-checkServerTime>30000){
+      //wifi->checkServer();
+      checkServerTime=mil;
+    }
+    if(mil-requestUpdateTime>20000){
+      //receiveEvent(wifiWire->getWire()->requestFrom(8,8));
+      wifiWire->getWire()->requestFrom(8,8);
+      receiveEvent(8);
+      requestUpdateTime=mil;
+    }
+    
+    //receiveEvent(wifiWire->getWire()->requestFrom(8,8));
     //w->sendMessage("Nama saya Jimmy Mondow, tinggal di kalawac, minahasa utara");
     /*static char msgTot[4];
     msgTot[0]=haha[0][8];
@@ -44,11 +58,12 @@ void loop()
     //tasks->checkCommands();
     //receiveEvent(wifiWire->getWire()->requestFrom(8,8));
     //processMsg();
-    delay(5000);
+    //delay(5000);
 }
 
-void receiveEvent(size_t howMany)
+void receiveEvent(int howMany)
 {
+  Serial.println("ada");
   byte data[howMany];
   int i = 0;
   while (wifiWire->getWire()->available())
@@ -103,7 +118,7 @@ uint64_t msgInt64(char *msg)
   return d0 + d1 + d2 + d3 + d4 + d5 + d6 + d7;
 }
 
-void processMsg()
+/*void processMsg()
 {
   uint64_t msg = msgs->dequeueMsg();
   if (msg == 0)
@@ -124,4 +139,4 @@ void processMsg()
   {
     //cmd->doCommand(data);
   }
-}
+}*/
