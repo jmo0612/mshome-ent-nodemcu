@@ -6,14 +6,14 @@ class JMGlobal
 private:
 public:
     static const unsigned long baudrate = 115200;
-    static const unsigned long wifiTimeOut = 5000;
     // static const int maxStack = 3;
     // static const unsigned int wireMaxChar = 20;
 
     static const uint8_t PACKET_MSG_DEVICES_DATA = 0;
     static const uint8_t PACKET_MSG_DO_CMD = 1;
-    static const uint8_t PACKET_MSG_REQUEST_DEVICES_DATA = 2;
-    static const uint8_t PACKET_MSG_SPECIAL = 3;
+    static const uint8_t PACKET_MSG_SPECIAL = 2;
+    static const uint8_t PACKET_MSG_QUEUED_DEVICES_DATA = 3;
+    static const uint8_t PACKET_MSG_INIT_DEVICES = 4;
 
     static const uint8_t CMD_STATUS_IDLE = 0;
     static const uint8_t CMD_STATUS_PROCESSING = 1;

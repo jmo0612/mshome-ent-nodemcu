@@ -5,7 +5,7 @@ const uint64_t msgMultiplier = 72057594037927936; // byte-8
 JMData::JMData(){
 
 };
-uint64_t JMData::getPow3s(uint8_t ind)
+const uint64_t JMData::getPow3s(uint8_t ind)
 {
     if (ind == 0)
     {
@@ -139,6 +139,21 @@ uint64_t JMData::getPow3s(uint8_t ind)
 const uint64_t JMData::getMsgMultiplier(uint8_t packetMsg){
     return packetMsg*msgMultiplier;
 };
+const uint64_t JMData::devInitToInt64(const char* str)
+{
+    uint64_t msgInt64 = JMGlobal::PACKET_MSG_INIT_DEVICES * msgMultiplier;
+    uint64_t dataVal = 0;
+    uint8_t devSize = 32;
+
+    for (uint8_t i = 0; i < devSize; i++)
+    {
+        char tmp[]={*(str+i)};
+        uint8_t t=atoi(tmp);
+        dataVal += ( t* JMData::getPow3s(i));
+    }
+    dataVal += msgInt64;
+    return dataVal;
+};
 uint64_t JMData::devDataToInt64()
 {
     uint64_t msgInt64 = JMGlobal::PACKET_MSG_DEVICES_DATA * msgMultiplier;
@@ -234,33 +249,60 @@ const char *JMData::cek()
     return ret;
 };
 
-const byte *JMData::msgToBytes(uint64_t msg)
+byte *JMData::msgToBytes(uint64_t msg, bool trace)
 {
-    //Serial.println("jimot");
+    if (trace)
+        Serial.println("jimot");
     uint64_t tmp = msg;
     byte s0 = tmp >> 56;
-    //Serial.println(s0);
+    if (trace)
+        Serial.println(s0);
     tmp = msg << 8;
     byte s1 = tmp >> 56;
-    //Serial.println(s1);
+    if (trace)
+        Serial.println(s1);
     tmp = msg << 16;
     byte s2 = tmp >> 56;
-    //Serial.println(s2);
+    if (trace)
+        Serial.println(s2);
     tmp = msg << 24;
     byte s3 = tmp >> 56;
-    //Serial.println(s3);
+    if (trace)
+        Serial.println(s3);
     tmp = msg << 32;
     byte s4 = tmp >> 56;
-    //Serial.println(s4);
+    if (trace)
+        Serial.println(s4);
     tmp = msg << 40;
     byte s5 = tmp >> 56;
-    //Serial.println(s5);
+    if (trace)
+        Serial.println(s5);
     tmp = msg << 48;
     byte s6 = tmp >> 56;
-    //Serial.println(s6);
+    if (trace)
+        Serial.println(s6);
     tmp = msg << 56;
     byte s7 = tmp >> 56;
-    //Serial.println(s7);
-    static byte sData[8] = {s0, s1, s2, s3, s4, s5, s6, s7};
+    if (trace)
+        Serial.println(s7);
+    if (trace)
+        Serial.println("DATA");
+    // static byte sData[8] = {s0, s1, s2, s3, s4, s5, s6, s7};
+    static byte sData[8];
+    sData[0] = s0;
+    sData[1] = s1;
+    sData[2] = s2;
+    sData[3] = s3;
+    sData[4] = s4;
+    sData[5] = s5;
+    sData[6] = s6;
+    sData[7] = s7;
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        if (trace)
+            Serial.println(sData[i]);
+    }
+    if (trace)
+        Serial.println("END");
     return sData;
 };

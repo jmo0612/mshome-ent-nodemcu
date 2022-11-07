@@ -1,5 +1,6 @@
 #include "JMWifiWire.h"
 #include "JMGlobal.h"
+#include "JMData.h"
 
 uint8_t sendId = 0;
 
@@ -12,7 +13,7 @@ void JMWifiWire::setAsMaster(uint8_t sda, uint8_t scl, void (*receiveEvent)(int)
     this->isMaster=true;
     //this->_wire->begin(D1,D2);
     this->_wire->begin(sda,scl);
-    //this->_wire->onReceive(receiveEvent);
+    this->_wire->onReceive(receiveEvent);
     this->masterSda=sda;
     this->masterScl=scl;
 };
@@ -38,3 +39,15 @@ TwoWire *JMWifiWire::getWire()
 {
     return this->_wire;
 };
+/*void JMWifiWire::sendPackage()
+{
+    if (this->package != 0)
+    {
+        this->sendMessage2(JMData::msgToBytes(this->package));
+        this->package = 0;
+    }
+};
+void JMWifiWire::setPackage(uint64_t package)
+{
+    this->package = package;
+};*/

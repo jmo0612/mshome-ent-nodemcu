@@ -18,5 +18,7 @@ public:
     void setAsSlave(uint8_t address, void (*receiveEvent)(int), void (*requestEvent)());
     void sendMessage2(const byte *msg, const uint8_t slaveAddress = 0);
     TwoWire *getWire();
+    // void sendPackage();
+    // void setPackage(uint64_t package);
 };
 #endif

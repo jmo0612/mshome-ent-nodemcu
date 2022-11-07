@@ -10,16 +10,19 @@ private:
 
     uint64_t dataToInt64(uint8_t msg, uint64_t val);
     // void processPacket(uint64_t packet);
-    uint64_t getPow3s(uint8_t ind);
+    
 
 public:
-    static const byte *msgToBytes(uint64_t msg);
+    static byte *msgToBytes(uint64_t msg, bool trace = false);
     static const uint8_t getMsgFromPacket(uint64_t packet);
     static const uint64_t getValueFromPacket(uint64_t packet);
     static const uint64_t getMsgMultiplier(uint8_t packetMsg);
+    static const uint64_t getPow3s(uint8_t ind);
+    static const uint64_t devInitToInt64(const char* str);
 
     JMData();
     uint64_t devDataToInt64();
+    
     // long long devDataToInt64b(int msg);
     void updateDevData(uint64_t val);
     const char *cek();
