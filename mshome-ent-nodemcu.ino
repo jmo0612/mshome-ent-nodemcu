@@ -12,7 +12,6 @@ unsigned long checkServerTime=0;
 unsigned long requestUpdateTime=0;
 bool ongoingPackage=false;
 uint64_t package = 0;
-//bool init=false;
 bool initialized=false;
 void setup()
 {
@@ -25,19 +24,14 @@ void setup()
 
 void loop()
 {
-    if(initialized){
-      Serial.println("OK");
-    }
     if (ongoingPackage)
     {
       uint8_t msg = JMData::getMsgFromPacket(package);
       if (msg == JMGlobal::PACKET_MSG_DEVICES_DATA)
       {
-        //initialized=true;
+        initialized=true;
         uint64_t val=JMData::getValueFromPacket(package);
         wifi->saveDevicesData(val);
-        ongoingPackage=false;
-        package=0;
       }else if (msg == JMGlobal::PACKET_MSG_QUEUED_DEVICES_DATA)
       {
         uint64_t val=JMData::getValueFromPacket(package);
@@ -45,21 +39,24 @@ void loop()
         //delete queue db
         wifi->dequeueCommand();
         wifi->setReady(true);
-        ongoingPackage=false;
-        package=0;
+      }else{
+        if(!initialized){
+          Serial.println("tleh");
+          uint64_t package=JMData::devInitToInt64(wifi->httpGet2("/mshome-ent/g_dev_first_run.php"));
+          wifiWire->sendMessage2(JMData::msgToBytes(package),8);
+        }
       }
+      ongoingPackage=false;
+      package=0;
     }else{
       unsigned long mil=millis();
-      if(mil-checkServerTime>30000){
-        if(!initialized){
-          
-          uint64_t package=JMData::devInitToInt64(wifi->httpGet2("/mshome-ent/g_dev.php"));
-          wifiWire->sendMessage2(JMData::msgToBytes(package),8);
-        }else{
+      if(initialized){
+        if(mil-checkServerTime>30000){
           wifi->checkServer();
+          checkServerTime=mil;
         }
-        checkServerTime=mil;
       }
+      
       if(mil-requestUpdateTime>20000){
         Serial.println("request");
         receiveEvent(wifiWire->getWire()->requestFrom(8,8));

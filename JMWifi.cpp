@@ -132,7 +132,7 @@ void JMWifi::checkServer(){
 
 void JMWifi::saveDevicesData(uint64_t value){
     //     /mshome-ent/p_dev.php?sta=10000000000000000000000000000001
-    static char dev[58];
+    static char dev[58]={'/','m','s','h','o','m','e','-','e','n','t','/','p','_','d','e','v','.','p','h','p','?','s','t','a','=','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'};
     dev[0]='/';
     dev[1]='m';
     dev[2]='s';
@@ -172,7 +172,7 @@ void JMWifi::saveDevicesData(uint64_t value){
         dev[ind--] = buffer[0];
         quotient = quotient / 3;
     } while (quotient > 0);
-    for(uint8_t i=ind;i>=indStart;i--){
+    for(uint8_t i=indStart;i<=ind;i++){
         dev[i]='0';
     }
     this->httpGet2(dev);
@@ -181,7 +181,7 @@ void JMWifi::saveDevicesData(uint64_t value){
 void JMWifi::dequeueCommand(){
     
     //     /mshome-ent/p_dequeue.php?id=2147483647
-    static char dev[39];
+    static char dev[39]={'/','m','s','h','o','m','e','-','e','n','t','/','p','_','d','e','q','u','e','u','e','.','p','h','p','?','i','d','=','0','0','0','0','0','0','0','0','0','0'};
     dev[0]='/';
     dev[1]='m';
     dev[2]='s';
