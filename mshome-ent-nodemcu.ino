@@ -19,7 +19,7 @@ void setup()
     Serial.begin(JMGlobal::baudrate);
     delay(1000);
     wifi->setup(wifiWire);
-    Serial.println(F("RESET"));
+    // Serial.println(F("RESET"));
 }
 
 void loop()
@@ -41,7 +41,7 @@ void loop()
         wifi->setReady(true);
       }else{
         //if(!initialized){
-          Serial.println("tleh");
+          // Serial.println("tleh");
           uint64_t package=JMData::devInitToInt64(wifi->httpGet2("/mshome-ent/g_dev_first_run.php"));
           wifiWire->sendMessage2(JMData::msgToBytes(package),8);
         //}
@@ -58,7 +58,7 @@ void loop()
       }
       
       if(mil-requestUpdateTime>20000){
-        Serial.println("request");
+        // Serial.println("request");
         receiveEvent(wifiWire->getWire()->requestFrom(8,8));
         requestUpdateTime=mil;
       }
@@ -67,7 +67,7 @@ void loop()
 
 void receiveEvent(int howMany)
 {
-  Serial.println("receive");
+  // Serial.println("receive");
   byte data[howMany];
   int i = 0;
   while (wifiWire->getWire()->available())

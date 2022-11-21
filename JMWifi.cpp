@@ -31,7 +31,7 @@ void JMWifi::setup(JMWifiWire *wifiWire)
     {
         delay(1000);
     }
-    Serial.println(this->wifi->localIP());
+    // Serial.println(this->wifi->localIP());
     
 
     this->shutDownTimeStamp=atoi(this->httpGet2("/mshome-ent/g_sd_time.php"));
@@ -69,7 +69,7 @@ const char* JMWifi::httpGet2(const char* url, const uint8_t attempt){
     //return "KEODE";
 };
 const char* JMWifi::httpGet(const char* url){
-    Serial.println("second");
+    // Serial.println("second");
     this->http->setTimeout(JMWifi::wifiTimeOut);
     this->http->begin(*this->client, JMConnection::host(), JMConnection::host_port(), url, JMConnection::isHttps());
     this->http->addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -94,7 +94,7 @@ const char* JMWifi::httpGet(const char* url){
 };
 
 void JMWifi::checkServer(){
-    //Serial.println("CHECKING SERVER");
+    // Serial.println("CHECKING SERVER");
     if(!this->ready)return;
     if(this->shutDownTimeStamp>0){
         const uint32_t now=atoi(this->httpGet2("/mshome-ent/g_time.php"));
@@ -102,7 +102,7 @@ void JMWifi::checkServer(){
             //shutdown
             uint64_t package=JMData::getMsgMultiplier(JMGlobal::PACKET_MSG_SPECIAL)+JMGlobal::MSG_SPECIAL_VALUE_SHUTDOWNALL;
             this->wifiWire->sendMessage2(JMData::msgToBytes(package),8);
-            Serial.println("SHUTTING DOWN");
+            // Serial.println("SHUTTING DOWN");
             this->shutDownTimeStamp=0;
         }
     }
@@ -123,7 +123,7 @@ void JMWifi::checkServer(){
         this->currentQueue=data[0];
         uint64_t package=JMData::getMsgMultiplier(JMGlobal::PACKET_MSG_DO_CMD)+data[1];
         if(this->currentQueue>0){
-            Serial.println("send");
+            // Serial.println(F("send"));
             this->wifiWire->sendMessage2(JMData::msgToBytes(package),8);
             this->ready=false;
         }
@@ -176,7 +176,7 @@ void JMWifi::saveDevicesData(uint64_t value){
         dev[i]='0';
     }
     this->httpGet2(dev);
-    Serial.println(dev);
+    // Serial.println(dev);
 };
 void JMWifi::dequeueCommand(){
     
@@ -224,5 +224,5 @@ void JMWifi::dequeueCommand(){
     }
     this->httpGet2(dev);
     this->currentQueue=0;
-    Serial.println(dev);
+    // Serial.println(dev);
 };

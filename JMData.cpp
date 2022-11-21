@@ -167,18 +167,7 @@ uint64_t JMData::devDataToInt64()
     dataVal += msgInt64;
     return dataVal;
 };
-/*long long JMData::devDataToInt64b(int msg)
-{
-    long long msgInt64 = msg * msgMultiplier;
-    long long dataVal = 0;
-    int devSize = 32;
-    for (int i = 0; i < devSize; i++)
-    {
-        dataVal += (this->dev[i] * (pow(3, (devSize - i - 1))));
-    }
-    dataVal += msgInt64;
-    return dataVal;
-};*/
+
 uint64_t JMData::dataToInt64(uint8_t msg, uint64_t val)
 {
     return (msg * msgMultiplier) + val;
@@ -194,15 +183,19 @@ const uint64_t JMData::getValueFromPacket(uint64_t packet)
 };
 void JMData::updateDevData(uint64_t val)
 {
-    uint8_t ind = 0;
+    uint8_t ind = 31;
     uint64_t quotient = val;
     int remain;
     do
     {
         remain = quotient % 3;
-        this->dev[ind++] = remain;
+        this->dev[ind--] = remain;
         quotient = quotient / 3;
     } while (quotient > 0);
+    for (uint8_t i = 0; i <= ind; i++)
+    {
+        this->dev[i] = 0;
+    }
 };
 void JMData::updateDevice(uint8_t id, uint8_t val)
 {
@@ -216,15 +209,7 @@ uint8_t JMData::getDeviceStatus(uint8_t id)
         return 3;
     return this->dev[id];
 };
-/*void JMData::processPacket(uint64_t packet)
-{
-    int msg = this->getMsgFromPacket(packet);
-    uint64_t val = this->getValueFromPacket(packet);
-    if (msg == JMGlobal::PACKET_MSG_UPDATE_DEVICES_DATA)
-    {
-        this->updateDevData(val);
-    }
-};*/
+
 const char *JMData::cek()
 {
     char ret[96];
