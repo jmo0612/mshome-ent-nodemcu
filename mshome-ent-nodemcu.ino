@@ -40,11 +40,11 @@ void loop()
         wifi->dequeueCommand();
         wifi->setReady(true);
       }else{
-        if(!initialized){
+        //if(!initialized){
           Serial.println("tleh");
           uint64_t package=JMData::devInitToInt64(wifi->httpGet2("/mshome-ent/g_dev_first_run.php"));
           wifiWire->sendMessage2(JMData::msgToBytes(package),8);
-        }
+        //}
       }
       ongoingPackage=false;
       package=0;
