@@ -18,7 +18,7 @@ private:
     bool ready=true;
     int currentQueue=0;
     
-    uint32_t shutDownTimeStamp;
+    uint32_t shutDownTimeStamp=0;
     //const char* httpGet2(const char* url, const uint8_t attempt=0);
     const char* httpGet(const char* url);
 

@@ -34,7 +34,15 @@ void JMWifi::setup(JMWifiWire *wifiWire)
     // Serial.println(this->wifi->localIP());
     
 
-    this->shutDownTimeStamp=atoi(this->httpGet2("/mshome-ent/g_sd_time.php"));
+    while(this->shutDownTimeStamp==0){
+        //Serial.println(F("looping"));
+        const char* shutStr=this->httpGet2("/mshome-ent/g_sd_time.php");
+        if(shutStr!=""){
+            this->shutDownTimeStamp=atoi(shutStr);    
+            if(this->shutDownTimeStamp>0)break;
+        }
+        delay(10000);
+    }
 
     //uint64_t package=JMData::devInitToInt64(this->httpGet2("/mshome-ent/g_dev.php"));
     //this->wifiWire->sendMessage2(JMData::msgToBytes(package),8);

@@ -41,7 +41,7 @@ void loop()
         wifi->setReady(true);
       }else{
         //if(!initialized){
-          // Serial.println("tleh");
+          //Serial.println("tleh");
           uint64_t package=JMData::devInitToInt64(wifi->httpGet2("/mshome-ent/g_dev_first_run.php"));
           wifiWire->sendMessage2(JMData::msgToBytes(package),8);
         //}
